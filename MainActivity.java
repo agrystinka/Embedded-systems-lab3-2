@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private PopupWindow popupWindow;
+    private LayoutInflater layoutInflater;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,9 +90,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        double end = System.nanoTime();
+
         TextView textView = findViewById(R.id.textView);
         textView.setText(String.format("W1 = %.3f, W2 = %.3f\nTime = %.3f ms, Delta = %.3f\n",
-                w1, w2, (System.nanoTime() - start)/1000000, p - (a_x * w1 + a_y * w2)));
+                w1, w2, (end - start)/1000000, p - (a_x * w1 + a_y * w2)));
+
+        String finalTime = new Double(end - start).toString();
+        countText.setText("Час обрахунку:\n" + finalTime);
+
+        layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.popupwindow, null);
+
+        popupWindow = new PopupWindow(container, 600, 200, true);
+        ((TextView)popupWindow.getContentView().findViewById(R.id.resultCount)).setText("Час обрахунку:\n" + finalTime);
+        popupWindow.showAtLocation(v, Gravity.NO_GRAVITY, 300, 300);
     }
 }
-
